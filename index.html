@@ -1,81 +1,269 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>30% Price Increase Calculator</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-    }
-    input, button {
-      padding: 10px;
-      margin: 5px 5px 5px 0;
-    }
-    #result {
-      margin-top: 10px;
-      font-weight: bold;
-    }
-    #copyMessage {
-      color: green;
-      font-weight: bold;
-      margin-top: 10px;
-      display: none;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>De'Dzine Interactive Content Calendar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #FBF8F1; color: #3C3633; }
+        .tab-active { background-color: #7A9E9F; color: #FBF8F1; }
+        .tab-inactive { background-color: #CAD2C5; color: #3C3633; }
+        .content-card { background-color: #FFFFFF; border: 1px solid #D1D5DB; transition: box-shadow 0.3s ease-in-out; }
+        .content-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .details-btn { background-color: #E0A75E; color: #FFFFFF; }
+        .details-btn:hover { background-color: #D49344; }
+        .filter-select { background-color: #FFFFFF; border: 1px solid #CAD2C5; color: #3C3633; }
+        .section-title { color: #7A9E9F; border-bottom: 2px solid #E0A75E; padding-bottom: 0.5rem; }
+        /* Ensure Inter font is loaded if not available system-wide */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+    </style>
 </head>
-<body>
+<body class="antialiased">
 
-  <h2>30% Price Increase Calculator</h2>
+    <div class="container mx-auto p-4 md:p-8 max-w-6xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-[#7A9E9F]">De'Dzine Interactive Content Dashboard</h1>
+            <p class="text-lg text-[#3C3633] mt-2">
+                Welcome to your interactive guide for De'Dzine's social media content. This dashboard helps you explore and manage the content calendar for May and June 2025. Navigate using the tabs and filters below to view scheduled posts, the overall strategy, and key posting tips.
+            </p>
+        </header>
 
-  <input type="number" id="priceInput" placeholder="Enter original price" />
-  <button onclick="calculateIncrease()">Calculate +30%</button>
-  <button onclick="resetForm()">Reset</button>
-  <button onclick="copyToClipboard()">Copy</button>
+        <nav class="flex justify-center mb-8 space-x-2 md:space-x-4">
+            <button id="tab-calendar" class="tab-active px-4 py-2 md:px-6 md:py-3 rounded-lg font-semibold shadow-md focus:outline-none">Calendar View</button>
+            <button id="tab-strategy" class="tab-inactive px-4 py-2 md:px-6 md:py-3 rounded-lg font-semibold shadow-md focus:outline-none">Overall Strategy</button>
+            <button id="tab-tips" class="tab-inactive px-4 py-2 md:px-6 md:py-3 rounded-lg font-semibold shadow-md focus:outline-none">Key Tips</button>
+        </nav>
 
-  <p id="result"></p>
-  <p id="copyMessage">Copied!</p>
+        <main>
+            <section id="content-calendar" class="space-y-6">
+                <div class="text-center mb-6">
+                     <h2 class="text-2xl font-semibold section-title inline-block">Scheduled Social Media Posts</h2>
+                     <p class="text-md text-[#3C3633] mt-2">This section displays your scheduled social media posts. Use the filters below to select a specific month and week. Each card details a post's theme, caption ideas, video concepts, and SEO focus.</p>
+                </div>
+                <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-6 p-4 bg-[#CAD2C5] rounded-lg shadow">
+                    <div>
+                        <label for="month-filter" class="block text-sm font-medium text-[#3C3633] mb-1">Filter by Month:</label>
+                        <select id="month-filter" class="filter-select p-2 rounded-md shadow-sm focus:ring-[#7A9E9F] focus:border-[#7A9E9F] w-full sm:w-auto">
+                            <option value="May">May 2025</option>
+                            <option value="June">June 2025</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="week-filter" class="block text-sm font-medium text-[#3C3633] mb-1">Filter by Week:</label>
+                        <select id="week-filter" class="filter-select p-2 rounded-md shadow-sm focus:ring-[#7A9E9F] focus:border-[#7A9E9F] w-full sm:w-auto">
+                            
+                        </select>
+                    </div>
+                </div>
+                <div id="posts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                </div>
+            </section>
 
-  <script>
-    let lastResult = '';
+            <section id="content-strategy" class="hidden space-y-4">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-semibold section-title inline-block">Overall Social Media Strategy</h2>
+                    <p class="text-md text-[#3C3633] mt-2">Here you'll find the overarching strategy for De'Dzine's social media presence. These points guide the content creation process to maximize engagement and brand growth.</p>
+                </div>
+                <div class="p-6 bg-white rounded-lg shadow-lg space-y-3 text-[#3C3633]">
+                    <p><strong>Engagement:</strong> Focus on behind-the-scenes, DIY inspiration, customer spotlights, polls, and interactive questions.</p>
+                    <p><strong>Google Ranking:</strong> Utilize relevant keywords in captions (e.g., "recycled tire furniture India," "eco-friendly home decor," "sustainable seating solutions," "upcycled tire art"), encourage website visits, and promote Google My Business reviews.</p>
+                    <p><strong>Visuals:</strong> High-quality photos and videos are crucial. Show the transformation process, the finished products in beautiful settings, and the craftsmanship.</p>
+                    <p><strong>Hashtags:</strong> Mix of broad, niche, and trending hashtags. Always include #DeDzine, #RecycledTires, #UpcycledFurniture, #SustainableLiving, #MadeInIndia.</p>
+                    <p><strong>Call to Action (CTA):</strong> Clear and concise CTAs in every post (e.g., "Shop now," "Learn more," "Tag a friend," "Visit our website").</p>
+                </div>
+            </section>
 
-    function calculateIncrease() {
-      const price = parseFloat(document.getElementById('priceInput').value);
-      if (isNaN(price)) {
-        document.getElementById('result').textContent = "Please enter a valid number.";
-        lastResult = '';
-        return;
-      }
-      const increasedPrice = Math.round(price * 1.3); // round to whole number
-      lastResult = increasedPrice.toString();
-      document.getElementById('result').textContent = `New price after 30% increase: ₦${lastResult}`;
-    }
+            <section id="content-tips" class="hidden space-y-4">
+                 <div class="text-center mb-6">
+                    <h2 class="text-2xl font-semibold section-title inline-block">Key Posting Tips</h2>
+                    <p class="text-md text-[#3C3633] mt-2">This section provides essential tips and best practices to ensure your social media efforts are effective. Refer to these guidelines when creating and publishing content.</p>
+                </div>
+                <ul class="list-disc list-inside p-6 bg-white rounded-lg shadow-lg space-y-3 text-[#3C3633]">
+                    <li><strong>High-Quality Visuals:</strong> Invest in good lighting and a decent camera. Blurry or poorly lit images will not engage.</li>
+                    <li><strong>Consistency:</strong> Stick to your 4 posts a week. Algorithms reward consistency.</li>
+                    <li><strong>Engagement is Key:</strong> Respond to every comment and DM promptly. Ask questions in your captions.</li>
+                    <li><strong>Hashtag Strategy:</strong> Research trending and relevant hashtags. Use a mix of broad, niche, and location-specific hashtags.</li>
+                    <li><strong>Cross-Promotion:</strong> Share your social media posts on your website, email newsletters, and other platforms.</li>
+                    <li><strong>Analytics:</strong> Regularly review your social media analytics to see what's performing well and adjust your strategy accordingly.</li>
+                    <li><strong>Google My Business:</strong> Actively encourage customers to leave reviews on your Google My Business profile. This is crucial for local SEO.</li>
+                    <li><strong>Website Integration:</strong> Ensure your website is linked in your bio and prominently featured in your posts. Drive traffic to product pages.</li>
+                    <li><strong>Community Building:</strong> Create a sense of community around sustainable living and unique home decor.</li>
+                </ul>
+            </section>
+        </main>
 
-    function resetForm() {
-      document.getElementById('priceInput').value = '';
-      document.getElementById('result').textContent = '';
-      document.getElementById('copyMessage').style.display = 'none';
-      lastResult = '';
-    }
+        <footer class="text-center mt-12 py-4 border-t border-[#CAD2C5]">
+          <p><a href="timetable.html">Calculate price reductions</a></p>
+            <p class="text-sm text-[#3C3633]">&copy; <span id="currentYear"></span> De'Dzine. All Rights Reserved.</p>
+        </footer>
+    </div>
 
-    function copyToClipboard() {
-      if (lastResult === '') return;
+    <script>
+        const postsData = [
+            { month: "May", year: 2025, week: 4, date: "May 26", day: "Mon", theme: "Product Spotlight: The 'Green Oasis' Planter", caption: "Transform your space into a green oasis with our eco-friendly tire planters! 🪴 Made with love and sustainability in mind. #DeDzine #RecycledPlanters #SustainableGardening", videoIdea: "Short video showing the planter from different angles, zooming in on the texture, and a plant being placed inside.", googleRankingFocus: "Keywords: \"eco-friendly planters India,\" \"recycled tire garden pots\"" },
+            { month: "May", year: 2025, week: 4, date: "May 28", day: "Wed", theme: "Behind the Scenes: The Art of Upcycling", caption: "Ever wondered how old tires become stunning furniture? ✨ Here's a peek into the dedication behind every De'Dzine creation! #UpcyclingProcess #TireArt #Craftsmanship", videoIdea: "Time-lapse video of a tire being prepared (cleaned, cut). Focus on the hands working.", googleRankingFocus: "Keywords: \"upcycling process India,\" \"sustainable furniture making\"" },
+            { month: "May", year: 2025, week: 4, date: "May 30", day: "Fri", theme: "Customer Story/Testimonial", caption: "Seeing our creations bring joy makes our hearts full! ❤️ Thank you @[CustomerHandle] for sharing this beautiful moment with our De'Dzine armchair. #DeDzineFamily #HappyCustomers #HomeDecor", videoIdea: "Short interview with a customer (if possible) or a video showing different people enjoying the product.", googleRankingFocus: "Encourage Google reviews. Keywords: \"tire furniture reviews,\" \"best recycled furniture\"" },
+            { month: "May", year: 2025, week: 4, date: "May 31", day: "Sat", theme: "Quiz/Poll: \"Which De'Dzine piece is your favorite?\"", caption: "Time to pick your favorite! 🤔 Swipe through and tell us which De'Dzine masterpiece steals your heart. 👇 #DeDzinePoll #SustainableStyle #ChooseYourFavorite", videoIdea: "A quick montage of the products in the poll, with text overlays for options.", googleRankingFocus: "Drive engagement, indirectly promotes products." },
+            { month: "June", year: 2025, week: 1, date: "June 2", day: "Mon", theme: "Product Showcase: The Cozy Cottage Chair", caption: "Dreaming of cozy corners? 💭 Our Cottage Chair, crafted from recycled tires, brings comfort and charm to any space. Perfect for your reading nook! #DeDzine #CottageCore #EcoFriendlySeating", videoIdea: "Video showcasing the chair's comfort, perhaps someone reading in it, with soft lighting.", googleRankingFocus: "Keywords: \"recycled tire cottage chair,\" \"eco-friendly seating India\"" },
+            { month: "June", year: 2025, week: 1, date: "June 4", day: "Wed", theme: "DIY/Inspiration: Decorating with De'Dzine", caption: "Unleash your inner interior designer! ✨ See how versatile our recycled tire pieces are in transforming different rooms. Which style is yours? #DeDzineInspo #HomeDecorTips #UpcycledLiving", videoIdea: "Fast-paced video showing the same product (e.g., a planter) styled in 2-3 different ways.", googleRankingFocus: "Keywords: \"tire furniture styling,\" \"sustainable home decor ideas\"" },
+            { month: "June", year: 2025, week: 1, date: "June 6", day: "Fri", theme: "Behind the Scenes: Meet the Artisans", caption: "The hands that make magic! ✨ We're incredibly proud of our talented team who pour their heart and soul into every De'Dzine creation. #MadeInIndia #Craftsmanship #DeDzineTeam", videoIdea: "Short interview with an artisan, asking them what they enjoy most about their work.", googleRankingFocus: "Keywords: \"Indian artisans,\" \"handmade recycled furniture\"" },
+            { month: "June", year: 2025, week: 1, date: "June 8", day: "Sun", theme: "World Oceans Day (June 8th)", caption: "On #WorldOceansDay, we're reminded of our mission to protect our planet. 🌊 Every De'Dzine product helps keep tires out of landfills, making a positive impact. #DeDzineForEarth #SustainableFuture #GoGreen", videoIdea: "Video showing tires being prevented from going to waste, perhaps juxtaposed with images of clean oceans.", googleRankingFocus: "Keywords: \"sustainable products India,\" \"waste reduction solutions\"" },
+            { month: "June", year: 2025, week: 2, date: "June 10", day: "Mon", theme: "Product Spotlight: The 'Zen Garden' Bench", caption: "Find your calm on our 'Zen Garden' bench. 🧘 Crafted from recycled tires, it's perfect for reflection and enjoying nature. #DeDzine #RecycledBench #OutdoorFurniture", videoIdea: "Slow-motion video of someone sitting peacefully on the bench, perhaps with ambient nature sounds.", googleRankingFocus: "Keywords: \"recycled outdoor bench India,\" \"sustainable garden furniture\"" },
+            { month: "June", year: 2025, week: 2, date: "June 12", day: "Wed", theme: "Call for User-Generated Content (UGC)", caption: "We love seeing our products in your beautiful homes! 😍 Share your De'Dzine moments using #MyDeDzine and get a chance to be featured! #UGC #CustomerLove #DeDzineCommunity", videoIdea: "Quick montage of past customer photos/videos (if available) with text encouraging new submissions.", googleRankingFocus: "Boost engagement and social proof." },
+            { month: "June", year: 2025, week: 2, date: "June 14", day: "Fri", theme: "Fact Friday: Impact of Recycling Tires", caption: "Did you know? Billions of tires end up in landfills each year! 🤯 At De'Dzine, we're turning that waste into wonders, one piece at a time. #RecycleFacts #EcoImpact #SustainableSolutions", videoIdea: "Animated graphic or text overlay showing a statistic, then transitioning to a De'Dzine product.", googleRankingFocus: "Keywords: \"tire recycling facts India,\" \"environmental impact of waste\"" },
+            { month: "June", year: 2025, week: 2, date: "June 15", day: "Sat", theme: "Father's Day (June 15th)", caption: "This Father's Day, give the gift of unique style and sustainability! 🎁 Our recycled tire creations make perfect gifts for the eco-conscious dad. #FathersDayIndia #DeDzineGifts #SustainableGifts", videoIdea: "Short video showcasing a few products that would make great gifts for dads (e.g., a rugged planter, a comfortable armchair).", googleRankingFocus: "Keywords: \"unique gifts for dad India,\" \"eco-friendly Father's Day gifts\"" },
+            { month: "June", year: 2025, week: 3, date: "June 17", day: "Mon", theme: "Product Spotlight: The Artistic Sculpture", caption: "Art that makes a statement and saves the planet! 🌍 Our recycled tire sculptures are truly one-of-a-kind. Which one speaks to you? #DeDzineArt #RecycledSculpture #ArtForChange", videoIdea: "Video slowly panning over the sculpture, highlighting its intricate details and shadows.", googleRankingFocus: "Keywords: \"recycled tire art India,\" \"eco-friendly sculptures\"" },
+            { month: "June", year: 2025, week: 3, date: "June 19", day: "Wed", theme: "Google My Business Push", caption: "Loved your De'Dzine experience? ✨ We'd be grateful if you could leave us a review on Google! Your feedback helps us grow. Link in bio! #GoogleReviews #SupportSmallBusiness #DeDzine", videoIdea: "Short animated video showing how to leave a Google review (simple steps).", googleRankingFocus: "Direct call to action for Google reviews." },
+            { month: "June", year: 2025, week: 3, date: "June 21", day: "Fri", theme: "International Yoga Day (June 21st)", caption: "On #InternationalYogaDay, create your peaceful sanctuary. 🧘‍♀️ Our recycled tire swings and benches are perfect for moments of calm and contemplation. #DeDzineWellness #MindfulLiving #YogaAtHome", videoIdea: "Video of someone meditating or doing light stretches near a De'Dzine bench or swing.", googleRankingFocus: "Keywords: \"sustainable yoga props,\" \"mindful living products\"" },
+            { month: "June", year: 2025, week: 3, date: "June 22", day: "Sat", theme: "Interactive \"This or That\" Poll", caption: "Decisions, decisions! 🤔 Which De'Dzine creation would you choose for your space? Swipe to vote! #ThisOrThat #DeDzineStyle #UpcycledChoices", videoIdea: "Two short clips or static images of the two products side-by-side, with a poll overlay.", googleRankingFocus: "Boost engagement and preference insights." },
+            { month: "June", year: 2025, week: 4, date: "June 24", day: "Mon", theme: "Product Spotlight: The Fun Swing", caption: "Swing into sustainable fun! 🥳 Our recycled tire swings bring joy to all ages and add a unique touch to your garden. #DeDzine #RecycledSwing #OutdoorFun", videoIdea: "Video of someone playfully swinging, perhaps laughing, showing the swing's stability.", googleRankingFocus: "Keywords: \"recycled tire swing India,\" \"sustainable outdoor play\"" },
+            { month: "June", year: 2025, week: 4, date: "June 26", day: "Wed", theme: "Partnership/Collaboration Tease (if applicable)", caption: "Exciting news brewing at De'Dzine! ✨ Stay tuned for something special coming your way soon. Any guesses? 😉 #DeDzineNews #Collaboration #SustainableFuture", videoIdea: "Short, mysterious video clip – maybe a blurred product or a behind-the-scenes snippet without revealing too much.", googleRankingFocus: "Builds anticipation, shows growth." },
+            { month: "June", year: 2025, week: 4, date: "June 28", day: "Fri", theme: "Recap of Popular Posts/Products from the Month", caption: "June has been amazing! 🙌 Here's a look back at some of your favorite De'Dzine moments and creations this month. Which was your top pick? #DeDzineHighlights #MonthlyFavorites #Upcycled", videoIdea: "Quick montage of clips from previous popular videos/photos, with upbeat music.", googleRankingFocus: "Reinforces popular products, engagement." },
+            { month: "June", year: 2025, week: 4, date: "June 30", day: "Sun", theme: "Sneak Peek/Next Month's Theme Tease", caption: "As June wraps up, we're already cooking up something new for July! Get ready for more sustainable designs and exciting ideas. 🤩 #DeDzineFuture #NewArrivals #StayTuned", videoIdea: "Short, tantalizing video – a glimpse of a new product in the making, or a mood board for July's theme.", googleRankingFocus: "Builds anticipation for future content." }
+        ];
 
-      const tempInput = document.createElement("input");
-      document.body.appendChild(tempInput);
-      tempInput.value = lastResult;
-      tempInput.select();
-      document.execCommand("copy");
-      document.body.removeChild(tempInput);
+        const postsGrid = document.getElementById('posts-grid');
+        const monthFilter = document.getElementById('month-filter');
+        const weekFilter = document.getElementById('week-filter');
 
-      const msg = document.getElementById('copyMessage');
-      msg.style.display = 'block';
+        const tabCalendar = document.getElementById('tab-calendar');
+        const tabStrategy = document.getElementById('tab-strategy');
+        const tabTips = document.getElementById('tab-tips');
 
-      setTimeout(() => {
-        msg.style.display = 'none';
-      }, 3000);
-    }
-  </script>
+        const contentCalendar = document.getElementById('content-calendar');
+        const contentStrategy = document.getElementById('content-strategy');
+        const contentTips = document.getElementById('content-tips');
+        
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
 
+        function populateWeekFilter(selectedMonth) {
+            weekFilter.innerHTML = '';
+            const weeksInMonth = [...new Set(postsData.filter(post => post.month === selectedMonth).map(post => post.week))];
+            weeksInMonth.sort((a,b) => a - b);
+            
+            const allWeeksOption = document.createElement('option');
+            allWeeksOption.value = 'all';
+            allWeeksOption.textContent = 'All Weeks';
+            weekFilter.appendChild(allWeeksOption);
+
+            weeksInMonth.forEach(week => {
+                const option = document.createElement('option');
+                option.value = week;
+                option.textContent = `Week ${week}`;
+                weekFilter.appendChild(option);
+            });
+        }
+
+        function renderPosts(month, week) {
+            postsGrid.innerHTML = '';
+            const filteredPosts = postsData.filter(post => {
+                const monthMatch = post.month === month;
+                const weekMatch = week === 'all' || post.week === parseInt(week);
+                return monthMatch && weekMatch;
+            });
+
+            if (filteredPosts.length === 0) {
+                postsGrid.innerHTML = `<p class="col-span-full text-center text-gray-500">No posts scheduled for this selection.</p>`;
+                return;
+            }
+
+            filteredPosts.forEach(post => {
+                const card = document.createElement('div');
+                card.className = 'content-card p-5 rounded-xl shadow-lg space-y-3 flex flex-col justify-between';
+                
+                let captionHTML = post.caption;
+                let videoIdeaHTML = post.videoIdea;
+                const maxLength = 100;
+
+                if (post.caption.length > maxLength) {
+                    captionHTML = `<span class="short-text">${post.caption.substring(0, maxLength)}...</span><span class="full-text hidden">${post.caption}</span> <button class="details-btn text-xs px-2 py-1 rounded mt-1 toggle-details">Show More</button>`;
+                }
+                if (post.videoIdea.length > maxLength) {
+                    videoIdeaHTML = `<span class="short-text">${post.videoIdea.substring(0, maxLength)}...</span><span class="full-text hidden">${post.videoIdea}</span> <button class="details-btn text-xs px-2 py-1 rounded mt-1 toggle-details">Show More</button>`;
+                }
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-lg font-semibold text-[#7A9E9F]">${post.theme}</h3>
+                            <span class="text-sm font-medium bg-[#E0A75E] text-white px-2 py-1 rounded-full">${post.date}, ${post.day}</span>
+                        </div>
+                        <div class="text-sm text-[#3C3633] space-y-2">
+                            <p><strong>Caption:</strong> <span class="caption-content">${captionHTML}</span></p>
+                            <p><strong>Video Idea:</strong> <span class="video-idea-content">${videoIdeaHTML}</span></p>
+                            <p><strong>SEO Focus:</strong> <span class="bg-[#CAD2C5] px-2 py-0.5 rounded text-xs">${post.googleRankingFocus}</span></p>
+                        </div>
+                    </div>
+                `;
+                postsGrid.appendChild(card);
+            });
+
+            document.querySelectorAll('.toggle-details').forEach(button => {
+                button.addEventListener('click', function() {
+                    const parentP = this.closest('p');
+                    const shortText = parentP.querySelector('.short-text');
+                    const fullText = parentP.querySelector('.full-text');
+                    if (shortText && fullText) {
+                        shortText.classList.toggle('hidden');
+                        fullText.classList.toggle('hidden');
+                        this.textContent = fullText.classList.contains('hidden') ? 'Show More' : 'Show Less';
+                    }
+                });
+            });
+        }
+
+        function switchTab(activeTab) {
+            [tabCalendar, tabStrategy, tabTips].forEach(tab => {
+                tab.classList.remove('tab-active');
+                tab.classList.add('tab-inactive');
+            });
+            activeTab.classList.add('tab-active');
+            activeTab.classList.remove('tab-inactive');
+
+            contentCalendar.classList.add('hidden');
+            contentStrategy.classList.add('hidden');
+            contentTips.classList.add('hidden');
+
+            if (activeTab === tabCalendar) contentCalendar.classList.remove('hidden');
+            if (activeTab === tabStrategy) contentStrategy.classList.remove('hidden');
+            if (activeTab === tabTips) contentTips.classList.remove('hidden');
+        }
+
+        monthFilter.addEventListener('change', () => {
+            populateWeekFilter(monthFilter.value);
+            renderPosts(monthFilter.value, weekFilter.value);
+        });
+
+        weekFilter.addEventListener('change', () => {
+            renderPosts(monthFilter.value, weekFilter.value);
+        });
+
+        tabCalendar.addEventListener('click', () => switchTab(tabCalendar));
+        tabStrategy.addEventListener('click', () => switchTab(tabStrategy));
+        tabTips.addEventListener('click', () => switchTab(tabTips));
+
+        // Initial setup
+        populateWeekFilter(monthFilter.value);
+        weekFilter.value = 'all'; // Default to "All Weeks" for the initial month
+        if (postsData.some(p => p.month === "May" && p.week === 4)) { // Check if May Week 4 exists
+             monthFilter.value = "May";
+             populateWeekFilter("May");
+             const mayWeek4Option = Array.from(weekFilter.options).find(opt => opt.value === '4');
+             if (mayWeek4Option) {
+                weekFilter.value = '4';
+             } else {
+                weekFilter.value = 'all';
+             }
+        } else { // Default to June Week 1 if May Week 4 is not relevant (e.g., past that date)
+            monthFilter.value = "June";
+            populateWeekFilter("June");
+            weekFilter.value = '1';
+        }
+        renderPosts(monthFilter.value, weekFilter.value);
+        switchTab(tabCalendar); // Default to calendar view
+
+    </script>
 </body>
 </html>
